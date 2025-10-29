@@ -9,106 +9,283 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Clean background */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    /* Main background with smooth gradient */
     .main {
-        background-color: #f8f9fa;
+        background: linear-gradient(120deg, #667eea 0%, #9198e5 35%, #e8eaf6 70%, #ffffff 100%);
+        background-attachment: fixed;
+        padding: 0;
     }
     
     .stApp {
-        background-color: #f8f9fa;
+        background: transparent;
     }
     
-    /* Header styling */
-    .main-header {
-        text-align: center;
-        padding: 2rem 0 1rem 0;
+    /* Hide default Streamlit elements */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Sticky header with framework toggle */
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: white;
+        padding: 1.5rem 3rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 0 0 16px 16px;
+        margin: 0 0 3rem 0;
     }
     
-    .main-header h1 {
-        color: #1a1a1a;
-        font-size: 2.5rem;
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .app-title {
+        font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 0.5rem;
+        color: #1a1a2e;
+        margin: 0;
+        line-height: 1.2;
     }
     
-    .subtitle {
-        color: #6c757d;
-        font-size: 1.1rem;
+    .app-subtitle {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin: 0.25rem 0 0 0;
+        font-weight: 400;
+    }
+    
+    /* Container */
+    .content-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 3rem 3rem 3rem;
+    }
+    
+    /* Module cards with color highlights */
+    .module-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         margin-bottom: 2rem;
+        border-left: 4px solid #667eea;
     }
     
-    /* Card styling */
-    div[data-testid="stVerticalBlock"] > div:has(div.element-container) {
-        background-color: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    .module-card.results {
+        border-left-color: #10b981;
     }
     
-    /* Button styling */
+    .card-header {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Inter', sans-serif;
+        color: #1a1a2e;
+    }
+    
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6b7280;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+    
+    /* Buttons */
     .stButton>button {
-        background-color: #5865f2;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1.5rem;
-        font-weight: 500;
-        transition: background-color 0.2s;
+        border-radius: 8px;
+        padding: 0.625rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
     }
     
     .stButton>button:hover {
-        background-color: #4752c4;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
     
-    /* Form styling */
+    .stButton>button[kind="secondary"] {
+        background: white;
+        color: #667eea;
+        border: 2px solid #e5e7eb;
+        box-shadow: none;
+    }
+    
+    .stButton>button[kind="secondary"]:hover {
+        border-color: #667eea;
+        background: #f9fafb;
+    }
+    
+    /* Input fields */
     .stTextInput>div>div>input,
     .stTextArea>div>div>textarea {
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 0.5rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        transition: border-color 0.2s;
     }
     
     .stTextInput>div>div>input:focus,
     .stTextArea>div>div>textarea:focus {
-        border-color: #5865f2;
-        box-shadow: 0 0 0 0.2rem rgba(88, 101, 242, 0.25);
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
     
-    /* Slider styling */
+    /* Labels */
+    .stTextInput>label,
+    .stTextArea>label,
+    .stSlider>label {
+        font-weight: 500;
+        color: #374151;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Sliders */
     .stSlider>div>div>div>div {
-        background-color: #5865f2;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     
-    /* Radio button styling */
+    .stSlider>div>div>div {
+        padding: 0.5rem 0;
+    }
+    
+    /* Radio buttons in header */
+    .stRadio>div {
+        background: #f9fafb;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 2px solid #e5e7eb;
+        display: flex;
+        gap: 1rem;
+    }
+    
     .stRadio>label {
         font-weight: 600;
-        color: #1a1a1a;
-        font-size: 1rem;
+        color: #374151;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
     }
     
-    /* Section headers */
-    h2, h3 {
-        color: #1a1a1a;
-        font-weight: 600;
-    }
-    
-    /* DataFrame styling */
+    /* DataFrame */
     .dataframe {
+        font-size: 0.875rem;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Messages */
+    .stSuccess {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 8px;
+        color: #065f46;
+        padding: 1rem;
+    }
+    
+    .stInfo {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+        color: #1e40af;
+        padding: 1.25rem;
         font-size: 0.9rem;
     }
     
-    /* Success message */
-    .stSuccess {
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
+    .stError {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        color: #991b1b;
+        padding: 1rem;
     }
     
-    /* Info message */
-    .stInfo {
-        background-color: #e7f3ff;
-        border-color: #b3d9ff;
-        color: #004085;
+    /* Priority badges - modern text-based */
+    .priority-high {
+        background: #ecfdf5;
+        color: #065f46;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid #a7f3d0;
+    }
+    
+    .priority-medium {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid #fcd34d;
+    }
+    
+    .priority-low {
+        background: #fef2f2;
+        color: #991b1b;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid #fecaca;
+    }
+    
+    /* Spacing utilities */
+    .spacer {
+        height: 2rem;
+    }
+    
+    .spacer-small {
+        height: 1rem;
+    }
+    
+    /* Remove default padding */
+    .block-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    /* Framework selector in header */
+    .framework-selector {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .framework-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6b7280;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -116,111 +293,83 @@ st.markdown("""
 if 'ideas' not in st.session_state:
     st.session_state.ideas = []
 
-st.markdown('<div class="main-header"><h1>📊 RICE/ICE Scoring Calculator</h1></div>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle" style="text-align: center;">Prioritize your product ideas with data-driven decision making</p>', unsafe_allow_html=True)
+st.markdown('<div class="sticky-header">', unsafe_allow_html=True)
+st.markdown('<div class="header-content">', unsafe_allow_html=True)
 
-col_toggle, col_spacer = st.columns([1, 3])
-with col_toggle:
+col_title, col_framework = st.columns([2, 1])
+
+with col_title:
+    st.markdown('<div class="app-title">RICE/ICE Scoring Calculator</div>', unsafe_allow_html=True)
+    st.markdown('<div class="app-subtitle">Prioritize product ideas with data-driven scoring</div>', unsafe_allow_html=True)
+
+with col_framework:
+    st.markdown('<span class="section-label">Framework</span>', unsafe_allow_html=True)
     framework = st.radio(
-        "Framework:",
+        "Select Framework",
         ["RICE", "ICE"],
         horizontal=True,
-        help="RICE = (Reach × Impact × Confidence) ÷ Effort | ICE = (Impact × Confidence) ÷ Effort"
+        help="RICE = (Reach × Impact × Confidence) ÷ Effort  |  ICE = (Impact × Confidence) ÷ Effort",
+        label_visibility="collapsed"
     )
 
-st.markdown("---")
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("### ➕ Add New Idea")
+st.markdown('<div class="content-wrapper">', unsafe_allow_html=True)
+
+st.markdown('<div class="module-card">', unsafe_allow_html=True)
+st.markdown('<div class="card-header">Add New Idea</div>', unsafe_allow_html=True)
 
 with st.form("idea_form", clear_on_submit=True):
-    col1, col2 = st.columns([2, 1])
+    idea_name = st.text_input("Idea Name", placeholder="e.g., Dashboard Redesign")
     
-    with col1:
-        idea_name = st.text_input("Idea/Feature Name *", placeholder="e.g., User Dashboard Redesign")
+    st.markdown('<div class="spacer-small"></div>', unsafe_allow_html=True)
     
-    with col2:
-        st.write("")
+    idea_description = st.text_area(
+        "Description (Optional)", 
+        placeholder="Brief description of the idea...", 
+        height=100
+    )
     
-    idea_description = st.text_area("Description (optional)", placeholder="Brief description of the idea...", height=80)
-    
-    st.markdown("**Scoring Criteria**")
+    st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
+    st.markdown('<span class="section-label">Scoring Criteria</span>', unsafe_allow_html=True)
     
     if framework == "RICE":
-        col_a, col_b, col_c, col_d = st.columns(4)
+        col1, col2, col3, col4 = st.columns(4)
         
-        with col_a:
-            reach = st.slider(
-                "Reach",
-                min_value=1,
-                max_value=10,
-                value=5,
-                help="How many people will this impact?"
-            )
+        with col1:
+            reach = st.slider("Reach", 1, 10, 5, help="Number of people impacted")
         
-        with col_b:
-            impact = st.slider(
-                "Impact",
-                min_value=1,
-                max_value=10,
-                value=5,
-                help="How much will it impact each person?"
-            )
+        with col2:
+            impact = st.slider("Impact", 1, 10, 5, help="Impact per person")
         
-        with col_c:
-            confidence = st.slider(
-                "Confidence",
-                min_value=1,
-                max_value=10,
-                value=5,
-                help="How confident are you in your estimates?"
-            )
+        with col3:
+            confidence = st.slider("Confidence", 1, 10, 5, help="Confidence in estimates")
         
-        with col_d:
-            effort = st.slider(
-                "Effort",
-                min_value=1,
-                max_value=10,
-                value=5,
-                help="How much time/resources will it take?"
-            )
+        with col4:
+            effort = st.slider("Effort", 1, 10, 5, help="Time and resources needed")
     else:
         reach = None
-        col_a, col_b, col_c = st.columns(3)
+        col1, col2, col3 = st.columns(3)
         
-        with col_a:
-            impact = st.slider(
-                "Impact",
-                min_value=1,
-                max_value=10,
-                value=5,
-                help="How much will it impact?"
-            )
+        with col1:
+            impact = st.slider("Impact", 1, 10, 5, help="Overall impact")
         
-        with col_b:
-            confidence = st.slider(
-                "Confidence",
-                min_value=1,
-                max_value=10,
-                value=5,
-                help="How confident are you?"
-            )
+        with col2:
+            confidence = st.slider("Confidence", 1, 10, 5, help="Confidence level")
         
-        with col_c:
-            effort = st.slider(
-                "Effort",
-                min_value=1,
-                max_value=10,
-                value=5,
-                help="How much effort/time needed?"
-            )
+        with col3:
+            effort = st.slider("Effort", 1, 10, 5, help="Effort required")
     
-    col_btn1, col_btn2, col_btn3 = st.columns([1, 1, 2])
-    with col_btn1:
+    st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
+    
+    col_btn, col_empty = st.columns([1, 3])
+    with col_btn:
         submitted = st.form_submit_button("Calculate Score", use_container_width=True)
     
     if submitted:
         if not idea_name.strip():
-            st.error("⚠️ Please enter an idea name")
+            st.error("Please enter an idea name")
         else:
             if framework == "RICE":
                 score = (reach * impact * confidence) / effort
@@ -247,13 +396,16 @@ with st.form("idea_form", clear_on_submit=True):
                 }
             
             st.session_state.ideas.append(new_idea)
-            st.success(f"✅ Added '{idea_name}' with score: {round(score, 2)}")
+            st.success(f"Added '{idea_name}' with score: {round(score, 2)}")
             st.rerun()
 
-st.markdown("---")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
 
 if st.session_state.ideas:
-    st.markdown("### 📈 Prioritization Results")
+    st.markdown('<div class="module-card results">', unsafe_allow_html=True)
+    st.markdown('<div class="card-header">Prioritization Results</div>', unsafe_allow_html=True)
     
     df = pd.DataFrame(st.session_state.ideas)
     df_sorted = df.sort_values('Score', ascending=False).reset_index(drop=True)
@@ -261,44 +413,74 @@ if st.session_state.ideas:
     def get_priority(score, framework_type):
         if framework_type == "RICE":
             if score >= 50:
-                return "🟢 High"
+                return "● High"
             elif score >= 20:
-                return "🟡 Medium"
+                return "● Medium"
             else:
-                return "🔴 Low"
+                return "● Low"
         else:
             if score >= 20:
-                return "🟢 High"
+                return "● High"
             elif score >= 10:
-                return "🟡 Medium"
+                return "● Medium"
             else:
-                return "🔴 Low"
+                return "● Low"
     
-    df_sorted['Priority'] = df_sorted.apply(lambda row: get_priority(row['Score'], row['Framework']), axis=1)
+    df_sorted['Priority'] = df_sorted.apply(
+        lambda row: get_priority(row['Score'], row['Framework']), 
+        axis=1
+    )
     
     base_cols = ['Idea', 'Description', 'Impact', 'Confidence', 'Effort', 'Score', 'Framework', 'Priority']
-    available_cols = [col for col in base_cols if col in df_sorted.columns]
+    available_cols = []
     
-    if 'Reach' in df_sorted.columns:
-        available_cols.insert(3, 'Reach')
+    for col in base_cols:
+        if col in df_sorted.columns:
+            available_cols.append(col)
+    
+    if 'Reach' in df_sorted.columns and framework == "RICE":
+        idx = available_cols.index('Impact')
+        available_cols.insert(idx, 'Reach')
     
     df_display = df_sorted[available_cols]
+    
+    column_config = {
+        "Priority": st.column_config.TextColumn(
+            "Priority",
+            help="Priority level based on score",
+            width="small"
+        ),
+        "Score": st.column_config.NumberColumn(
+            "Score",
+            help="Calculated priority score",
+            format="%.2f"
+        )
+    }
     
     st.dataframe(
         df_display,
         use_container_width=True,
         hide_index=True,
-        height=min(400, len(df_display) * 35 + 38)
+        height=min(500, len(df_display) * 35 + 38),
+        column_config=column_config
     )
     
-    col_info, col_clear = st.columns([3, 1])
+    st.markdown('<div class="spacer-small"></div>', unsafe_allow_html=True)
+    
+    col_info, col_clear = st.columns([4, 1])
     
     with col_info:
-        st.caption(f"💡 {len(st.session_state.ideas)} idea(s) evaluated")
+        st.caption(f"{len(st.session_state.ideas)} idea(s) evaluated")
     
     with col_clear:
         if st.button("Clear All", type="secondary", use_container_width=True):
             st.session_state.ideas = []
             st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 else:
-    st.info("👆 Add your first idea above to start prioritizing!")
+    st.markdown('<div class="module-card results">', unsafe_allow_html=True)
+    st.info("Add your first idea above to start prioritizing your product backlog")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
