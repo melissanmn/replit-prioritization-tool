@@ -2,4 +2,4 @@
 .local/
 __pycache__/
 *.pyc
-.env
+.envuv.lock
